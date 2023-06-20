@@ -1,5 +1,5 @@
 use axum::{
-    body::{Body, HttpBody},
+    body::Body,
     http::{Request, StatusCode},
     middleware::{self, Next},
     response::Response,
@@ -7,7 +7,7 @@ use axum::{
     Router,
 };
 
-macro_rules! mid {
+macro_rules! db {
     ($path:expr, $method:expr; $($cnd:expr),+) => {
         Router::new()
             .route($path, $method)
@@ -18,9 +18,9 @@ macro_rules! mid {
 #[tokio::main]
 async fn main() {
     let app = Router::new()
-        .merge(mid!("/", get(|| async { "tyler\n" }); "tyler"))
-        .merge(mid!("/cow", get(|| async { "cow\n" }); "cow"))
-        .merge(mid!("/h", get(|| async {"h h h\n"}); "gregory", "power", "tyler"));
+        .merge(db!("/", get(|| async { "tyler\n" }); "tyler"))
+        .merge(db!("/cow", get(|| async { "cow\n" }); "cow"))
+        .merge(db!("/h", get(|| async {"h h h\n"}); "gregory", "power", "tyler"));
 
     axum::Server::bind(&"0.0.0.0:8080".parse().unwrap())
         .serve(app.into_make_service())
